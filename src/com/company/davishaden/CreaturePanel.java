@@ -6,9 +6,13 @@ chance of moving while the mouse is moving.
  */
 package com.company.davishaden;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 public class CreaturePanel extends JPanel {
     private int pointX = 250;
@@ -16,8 +20,11 @@ public class CreaturePanel extends JPanel {
     private int score = 0;
     private final ImageIcon finalImage;
     private final JLabel message;
-    public CreaturePanel(){
-        finalImage = new ImageIcon("images/creature.png");
+    public CreaturePanel() throws IOException {
+        //finalImage = new ImageIcon("images/creature.png");
+        BufferedImage bufferedImage = ImageIO.read(new File("images/creature.png"));
+        Image icon = bufferedImage.getScaledInstance(50*2, 41*2, Image.SCALE_DEFAULT);
+        finalImage = new ImageIcon(icon);
         message = new JLabel("Click on the creature!       Score: 0");
         message.setForeground(Color.white);
         add(message);
@@ -44,7 +51,7 @@ public class CreaturePanel extends JPanel {
 
         @Override
         public void mousePressed(MouseEvent e) {
-            if(e.getPoint().getX() <= pointX + 50 && e.getPoint().getX() >= pointX && e.getPoint().getY() <= pointY + 41 && e.getPoint().getY() >= pointY){
+            if(e.getPoint().getX() <= pointX + finalImage.getIconWidth() && e.getPoint().getX() >= pointX && e.getPoint().getY() <= pointY + finalImage.getIconHeight() && e.getPoint().getY() >= pointY){
                 pointX = (int) (Math.random() * 450);
                 pointY = (int) (Math.random() * 450);
                 score = score + 1;
@@ -82,6 +89,6 @@ public class CreaturePanel extends JPanel {
                 repaint();
             }
         }
-    }
 
+    }
 }
