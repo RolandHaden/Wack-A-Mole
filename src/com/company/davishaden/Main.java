@@ -9,11 +9,11 @@ import javax.swing.*;
 import java.io.IOException;
 
 public class Main {
-
+	public static JFrame frame;
     public static void main(String[] args) throws IOException {
-	    JFrame frame = new JFrame("Wack-A-Mole Game");
+	    frame = new JFrame("Wack-A-Mole Game");
 	    CreaturePanel panel = new CreaturePanel();
-	    frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 	    frame.getContentPane().add(panel);
 	    frame.pack();
 	    frame.setVisible(true);

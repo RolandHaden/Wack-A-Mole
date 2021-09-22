@@ -13,11 +13,16 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.*;
+
+import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 public class CreaturePanel extends JPanel {
     private int pointX = 250;
     private int pointY = 250;
     private int score = 0;
+    private final int imgWidth = 100;
+    private final int imgHeight = 94;
     private final ImageIcon finalImage;
     private final JLabel scoreDisplay;
 
@@ -25,9 +30,9 @@ public class CreaturePanel extends JPanel {
         //declaring variables and objects
         LineListener listener = new LineListener();
         JPanel messagePanel = new JPanel();
-        JLabel message = new JLabel("Click on the creature!");
+        JLabel message = new JLabel("Click on the creature! Once you reach a score of 20, you can close the program! ;)");
         BufferedImage bufferedImage = ImageIO.read(new File("images/creature.png"));
-        Image icon = bufferedImage.getScaledInstance(50*2, 41*2, Image.SCALE_DEFAULT);
+        Image icon = bufferedImage.getScaledInstance(imgWidth, imgHeight, Image.SCALE_DEFAULT);
         finalImage = new ImageIcon(icon);
         //Message Panel
         messagePanel.setLayout(new BoxLayout(messagePanel, BoxLayout.PAGE_AXIS));
@@ -41,6 +46,7 @@ public class CreaturePanel extends JPanel {
         //Score Display
         scoreDisplay = new JLabel("Score: 0");
         scoreDisplay.setAlignmentX(CENTER_ALIGNMENT);
+        scoreDisplay.setForeground(Color.white);
         scoreDisplay.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
         messagePanel.add(scoreDisplay);
         //adding elements
@@ -49,13 +55,14 @@ public class CreaturePanel extends JPanel {
         addMouseMotionListener(listener);
         //setting main panel attributes
         setBackground(new Color(188, 129, 219));
-        setPreferredSize(new Dimension(500,500));
+        setPreferredSize(new Dimension(600,500));
 
     }
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         finalImage.paintIcon(this, g, pointX, pointY);
     }
+
     private class LineListener implements MouseListener,MouseMotionListener {
         public void mouseClicked(MouseEvent e){
             /*if(e.getPoint().getX() <= pointX + 50 && e.getPoint().getX() >= pointX && e.getPoint().getY() <= pointY + 41 && e.getPoint().getY() >= pointY){
@@ -70,39 +77,41 @@ public class CreaturePanel extends JPanel {
         @Override
         public void mousePressed(MouseEvent e) {
             if(e.getPoint().getX() <= pointX + finalImage.getIconWidth() && e.getPoint().getX() >= pointX && e.getPoint().getY() <= pointY + finalImage.getIconHeight() && e.getPoint().getY() >= pointY){
-                pointX = (int) (Math.random() * 450);
-                pointY = (int) (Math.random() * 450);
+                pointX = (int) (Math.random() * (getWidth()-imgWidth));
+                pointY = (int) (Math.random() * (getHeight()-imgHeight));
                 score = score + 1;
+                scoreDisplay.setText("Score: " + score);
+                repaint();
+            }
+            if(score >= 20){
+                Main.frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
+            }
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {}
+
+        @Override
+        public void mouseEntered(MouseEvent e) {}
+
+        @Override
+        public void mouseExited(MouseEvent e) {}
+
+        @Override //Randomly moves the creature when ever the player drags their mouse.
+        public void mouseDragged(MouseEvent e) {
+            if(Math.random()*450 < 5) {
+                pointX = (int) (Math.random() * (getWidth()-imgWidth));
+                pointY = (int) (Math.random() * (getHeight()-imgHeight));
                 scoreDisplay.setText("Score: " + score);
                 repaint();
             }
         }
 
-        @Override
-        public void mouseReleased(MouseEvent e) {
-
-        }
-
-        @Override
-        public void mouseEntered(MouseEvent e) {
-
-        }
-
-        @Override
-        public void mouseExited(MouseEvent e) {
-
-        }
-
-        @Override
-        public void mouseDragged(MouseEvent e) {
-
-        }
-
-        @Override
+        @Override //Randomly moves the creature when ever the player moves their mouse.
         public void mouseMoved(MouseEvent e) {
             if(Math.random()*450 < 5) {
-                pointX = (int) (Math.random() * 450);
-                pointY = (int) (Math.random() * 450);
+                pointX = (int) (Math.random() * (getWidth()-imgWidth));
+                pointY = (int) (Math.random() * (getHeight()-imgHeight));
                 scoreDisplay.setText("Score: " + score);
                 repaint();
             }
