@@ -19,20 +19,38 @@ public class CreaturePanel extends JPanel {
     private int pointY = 250;
     private int score = 0;
     private final ImageIcon finalImage;
-    private final JLabel message;
+    private final JLabel scoreDisplay;
+
     public CreaturePanel() throws IOException {
-        //finalImage = new ImageIcon("images/creature.png");
+        //declaring variables and objects
+        LineListener listener = new LineListener();
+        JPanel messagePanel = new JPanel();
+        JLabel message = new JLabel("Click on the creature!");
         BufferedImage bufferedImage = ImageIO.read(new File("images/creature.png"));
         Image icon = bufferedImage.getScaledInstance(50*2, 41*2, Image.SCALE_DEFAULT);
         finalImage = new ImageIcon(icon);
-        message = new JLabel("Click on the creature!       Score: 0");
+        //Message Panel
+        messagePanel.setLayout(new BoxLayout(messagePanel, BoxLayout.PAGE_AXIS));
+        messagePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        messagePanel.setBackground(new Color(188, 129, 219));
+        //Message
+        message.setAlignmentX(CENTER_ALIGNMENT);
         message.setForeground(Color.white);
-        add(message);
-        LineListener listener = new LineListener();
+        message.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
+        messagePanel.add(message);
+        //Score Display
+        scoreDisplay = new JLabel("Score: 0");
+        scoreDisplay.setAlignmentX(CENTER_ALIGNMENT);
+        scoreDisplay.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
+        messagePanel.add(scoreDisplay);
+        //adding elements
+        add(messagePanel);
         addMouseListener(listener);
         addMouseMotionListener(listener);
+        //setting main panel attributes
         setBackground(new Color(188, 129, 219));
         setPreferredSize(new Dimension(500,500));
+
     }
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -55,7 +73,7 @@ public class CreaturePanel extends JPanel {
                 pointX = (int) (Math.random() * 450);
                 pointY = (int) (Math.random() * 450);
                 score = score + 1;
-                message.setText("Click on the creature!       Score: " + score);
+                scoreDisplay.setText("Score: " + score);
                 repaint();
             }
         }
@@ -85,7 +103,7 @@ public class CreaturePanel extends JPanel {
             if(Math.random()*450 < 2) {
                 pointX = (int) (Math.random() * 450);
                 pointY = (int) (Math.random() * 450);
-                message.setText("Click on the creature!       Score: " + score);
+                scoreDisplay.setText("Score: " + score);
                 repaint();
             }
         }
