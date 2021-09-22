@@ -32,7 +32,7 @@ public class CreaturePanel extends JPanel {
         //Message Panel
         messagePanel.setLayout(new BoxLayout(messagePanel, BoxLayout.PAGE_AXIS));
         messagePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        messagePanel.setBackground(new Color(188, 129, 219));
+        messagePanel.setOpaque(false);
         //Message
         message.setAlignmentX(CENTER_ALIGNMENT);
         message.setForeground(Color.white);
