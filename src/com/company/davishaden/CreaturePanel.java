@@ -13,7 +13,6 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.*;
 
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
@@ -30,7 +29,7 @@ public class CreaturePanel extends JPanel {
         //declaring variables and objects
         LineListener listener = new LineListener();
         JPanel messagePanel = new JPanel();
-        JLabel message = new JLabel("Click on the creature! Once you reach a score of 20, you can close the program! ;)");
+        JLabel message = new JLabel("Click on the creature! Once you reach a score of 10, you can close the program! ;)");
         BufferedImage bufferedImage = ImageIO.read(new File("images/creature.png"));
         Image icon = bufferedImage.getScaledInstance(imgWidth, imgHeight, Image.SCALE_DEFAULT);
         finalImage = new ImageIcon(icon);
@@ -41,13 +40,13 @@ public class CreaturePanel extends JPanel {
         //Message
         message.setAlignmentX(CENTER_ALIGNMENT);
         message.setForeground(Color.white);
-        message.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
+        message.setFont(new Font("Futura", Font.BOLD, 12));
         messagePanel.add(message);
         //Score Display
         scoreDisplay = new JLabel("Score: 0");
         scoreDisplay.setAlignmentX(CENTER_ALIGNMENT);
         scoreDisplay.setForeground(Color.white);
-        scoreDisplay.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
+        scoreDisplay.setFont(new Font("Futura", Font.BOLD, 12));
         messagePanel.add(scoreDisplay);
         //adding elements
         add(messagePanel);
@@ -83,7 +82,7 @@ public class CreaturePanel extends JPanel {
                 scoreDisplay.setText("Score: " + score);
                 repaint();
             }
-            if(score >= 20){
+            if(score > 10){
                 Main.frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
             }
         }
