@@ -1,7 +1,7 @@
 /*
 Name: Davis Haden
 Date: 9/21/2021
-Desc: Creature class for Wack-a-Mole. Moves the creature when it is clicked and adds a score. It also has a 0.4%
+Desc: Creature class for Wack-a-Mole. Moves the creature when it is clicked and adds a score. It also has a 1.1%
 chance of moving while the mouse is moving.
  */
 package com.company.davishaden;
@@ -100,7 +100,7 @@ public class CreaturePanel extends JPanel {
 
         @Override
         public void mouseMoved(MouseEvent e) {
-            if(Math.random()*450 < 2) {
+            if(Math.random()*450 < 5) {
                 pointX = (int) (Math.random() * 450);
                 pointY = (int) (Math.random() * 450);
                 scoreDisplay.setText("Score: " + score);
