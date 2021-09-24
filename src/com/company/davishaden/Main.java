@@ -12,9 +12,12 @@ import java.awt.*;
 import java.io.IOException;
 
 public class Main {
+
 	public static JFrame frame;
+
     public static void main(String[] args) throws IOException, UnsupportedAudioFileException, LineUnavailableException {
-	    frame = new JFrame("Wack-A-Mole Game");
+
+    	frame = new JFrame("Wack-A-Mole Game");
 		GraphicsEnvironment graphics = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		GraphicsDevice device = graphics.getDefaultScreenDevice();
 	    CreaturePanel panel = new CreaturePanel();
@@ -23,5 +26,7 @@ public class Main {
 	    frame.pack();
 	    frame.setVisible(true);
 		device.setFullScreenWindow(frame);
+
     }
+
 }
