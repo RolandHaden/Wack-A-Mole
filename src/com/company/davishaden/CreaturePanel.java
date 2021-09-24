@@ -7,6 +7,7 @@ chance of moving while the mouse is moving.
 package com.company.davishaden;
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -14,29 +15,47 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
-
 public class CreaturePanel extends JPanel {
+    //Integers
     private int pointX = 250;
     private int pointY = 250;
     private int score = 0;
     private final int imgWidth = 100;
     private final int imgHeight = 94;
+    //Objects
     private final ImageIcon finalImage;
+    private final ImageIcon backgroundImage;
     private final JLabel scoreDisplay;
+    private final Timer timer;
+    private final Clip audioClip;
 
-    public CreaturePanel() throws IOException {
+    public CreaturePanel() throws IOException, UnsupportedAudioFileException, LineUnavailableException {
         //declaring variables and objects
+        Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
         LineListener listener = new LineListener();
+        timer = new Timer(1000, new MovementListener());
+        //Audio Stuff
+        File audioFile = new File("sound/retrobulb.wav");
+        AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+        AudioFormat format = audioStream.getFormat();
+        DataLine.Info info = new DataLine.Info(Clip.class, format);
+        audioClip = (Clip) AudioSystem.getLine(info);
+        audioClip.open(audioStream);
+        //Message
         JPanel messagePanel = new JPanel();
-        JLabel message = new JLabel("Click on the creature! Once you reach a score of 10, you can close the program! ;)");
+        JLabel message = new JLabel("Click on the creature! Once you reach a score of 10, you can leave the program! ;)");
+        //Creature Image
         BufferedImage bufferedImage = ImageIO.read(new File("images/creature.png"));
         Image icon = bufferedImage.getScaledInstance(imgWidth, imgHeight, Image.SCALE_DEFAULT);
         finalImage = new ImageIcon(icon);
+        //Background Image
+        BufferedImage bufferedBackground = ImageIO.read(new File("images/background.png"));
+        Image background = bufferedBackground.getScaledInstance((int) screensize.getWidth(), (int) screensize.getHeight(), Image.SCALE_DEFAULT);
+        backgroundImage = new ImageIcon(background);
         //Message Panel
         messagePanel.setLayout(new BoxLayout(messagePanel, BoxLayout.PAGE_AXIS));
         messagePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        messagePanel.setOpaque(false);
+        messagePanel.setBackground(Color.black);
         //Message
         message.setAlignmentX(CENTER_ALIGNMENT);
         message.setForeground(Color.white);
@@ -53,24 +72,34 @@ public class CreaturePanel extends JPanel {
         addMouseListener(listener);
         addMouseMotionListener(listener);
         //setting main panel attributes
-        setBackground(new Color(188, 129, 219));
-        setPreferredSize(new Dimension(600,500));
+        setPreferredSize(new Dimension((int) screensize.getWidth(),(int) screensize.getHeight()));
 
     }
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+        backgroundImage.paintIcon(this,g,0,0);
         finalImage.paintIcon(this, g, pointX, pointY);
     }
+    //Resets the sound and plays it again
+    private void playSound(Clip c){
+            c.stop();
+            c.setFramePosition(0);
+            c.start();
+    }
+    //Changes the location of the creature at a timed variation
+    private class MovementListener implements ActionListener{
 
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            pointX = (int) (Math.random() * (getWidth()-imgWidth));
+            pointY = (int) (Math.random() * (getHeight()-imgHeight));
+            scoreDisplay.setText("Score: " + score);
+            repaint();
+        }
+    }
+    //Tracks the movement of the mouse and changes the score
     private class LineListener implements MouseListener,MouseMotionListener {
-        public void mouseClicked(MouseEvent e){
-            /*if(e.getPoint().getX() <= pointX + 50 && e.getPoint().getX() >= pointX && e.getPoint().getY() <= pointY + 41 && e.getPoint().getY() >= pointY){
-                pointX = (int) (Math.random() * 450);
-                pointY = (int) (Math.random() * 450);
-                score = score + 1;
-                message.setText("Click on the creature!       Score: " + score);
-                repaint();
-            }*///Use this string of code, if the creature is not responding to clicks.
+        public void mouseClicked(MouseEvent e){//Not consistent
         }
 
         @Override
@@ -79,41 +108,39 @@ public class CreaturePanel extends JPanel {
                 pointX = (int) (Math.random() * (getWidth()-imgWidth));
                 pointY = (int) (Math.random() * (getHeight()-imgHeight));
                 score = score + 1;
+                playSound(audioClip);
                 scoreDisplay.setText("Score: " + score);
                 repaint();
             }
-            if(score > 10){
-                Main.frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
+            if(score >= 10){
+                //Main.frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
+                System.exit(0);
             }
         }
 
-        @Override
-        public void mouseReleased(MouseEvent e) {}
 
         @Override
-        public void mouseEntered(MouseEvent e) {}
+        public void mouseReleased(MouseEvent e) {
+            timer.start();
+        }
 
         @Override
-        public void mouseExited(MouseEvent e) {}
+        public void mouseEntered(MouseEvent e) {
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+            timer.stop();
+        }
 
         @Override //Randomly moves the creature when ever the player drags their mouse.
         public void mouseDragged(MouseEvent e) {
-            if(Math.random()*450 < 5) {
-                pointX = (int) (Math.random() * (getWidth()-imgWidth));
-                pointY = (int) (Math.random() * (getHeight()-imgHeight));
-                scoreDisplay.setText("Score: " + score);
-                repaint();
-            }
+            timer.start();
         }
 
         @Override //Randomly moves the creature when ever the player moves their mouse.
         public void mouseMoved(MouseEvent e) {
-            if(Math.random()*450 < 5) {
-                pointX = (int) (Math.random() * (getWidth()-imgWidth));
-                pointY = (int) (Math.random() * (getHeight()-imgHeight));
-                scoreDisplay.setText("Score: " + score);
-                repaint();
-            }
+            timer.start();
         }
 
     }
