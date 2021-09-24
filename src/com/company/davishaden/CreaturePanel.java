@@ -1,6 +1,6 @@
 /*
 Name: Davis Haden
-Date: 9/21/2021
+Date: 9/24/2021
 Desc: Creature class for Wack-a-Mole. Moves the creature when it is clicked and adds a score. It also has a 1.1%
 chance of moving while the mouse is moving.
  */
@@ -25,6 +25,7 @@ public class CreaturePanel extends JPanel {
     //Objects
     private final ImageIcon finalImage;
     private final ImageIcon backgroundImage;
+    private final ImageIcon mouseImage;
     private final JLabel scoreDisplay;
     private final Timer timer;
     private final Clip audioClip;
@@ -52,6 +53,10 @@ public class CreaturePanel extends JPanel {
         BufferedImage bufferedBackground = ImageIO.read(new File("images/background.png"));
         Image background = bufferedBackground.getScaledInstance((int) screensize.getWidth(), (int) screensize.getHeight(), Image.SCALE_DEFAULT);
         backgroundImage = new ImageIcon(background);
+        //Mouse Image
+        BufferedImage bufferedMouse = ImageIO.read(new File("images/mouse.png"));
+        Image mouse = bufferedMouse.getScaledInstance(20, 20, Image.SCALE_DEFAULT);
+        mouseImage = new ImageIcon(mouse);
         //Message Panel
         messagePanel.setLayout(new BoxLayout(messagePanel, BoxLayout.PAGE_AXIS));
         messagePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -72,13 +77,17 @@ public class CreaturePanel extends JPanel {
         addMouseListener(listener);
         addMouseMotionListener(listener);
         //setting main panel attributes
+        // Transparent 16 x 16 pixel cursor image.
+        BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+        Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(cursorImg, new Point(0, 0), "blank cursor");
+        setCursor(blankCursor);
         setPreferredSize(new Dimension((int) screensize.getWidth(),(int) screensize.getHeight()));
-
     }
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         backgroundImage.paintIcon(this,g,0,0);
         finalImage.paintIcon(this, g, pointX, pointY);
+        mouseImage.paintIcon(this,g,(int) MouseInfo.getPointerInfo().getLocation().getX(),(int) MouseInfo.getPointerInfo().getLocation().getY());
     }
     //Resets the sound and plays it again
     private void playSound(Clip c){
@@ -141,7 +150,9 @@ public class CreaturePanel extends JPanel {
         @Override //Randomly moves the creature when ever the player moves their mouse.
         public void mouseMoved(MouseEvent e) {
             timer.start();
+            repaint();
         }
 
     }
+
 }
